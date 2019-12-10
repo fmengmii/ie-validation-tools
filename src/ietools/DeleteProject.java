@@ -40,7 +40,7 @@ public class DeleteProject
 		}
 	}
 	
-	public void deleteProject(String projectName)
+	public void deleteProject(String projectName, String dbType)
 	{
 		try {
 			PreparedStatement pstmtDeleteFrameInstance = conn.prepareStatement("delete from " + schema + "frame_instance where frame_instance_id = ?");
@@ -66,6 +66,17 @@ public class DeleteProject
 			PreparedStatement pstmtDeleteProject = conn.prepareStatement("delete from " + schema + "project where project_id = ?");
 			PreparedStatement pstmtDeleteCRFProj = conn.prepareStatement("delete from " + schema + "crf_project where project_id = ?");
 			
+			String resetAutoIncrementQuery = "alter table " + schema + "frame_instance auto_increment = 1";
+			if (dbType.startsWith("sqlserver"))
+				resetAutoIncrementQuery = "DBCC CHECKIDENT ('" + schema + "frame_instance', RESEED, 1)";
+			
+			String resetAutoIncrementQueryProject = "alter table " + schema + "project auto_increment = 1";
+			if (dbType.startsWith("sqlserver"))
+				resetAutoIncrementQueryProject = "DBCC CHECKIDENT ('" + schema + "project', RESEED, 1)";
+			
+			String resetAutoIncrementQueryCRFProject = "alter table " + schema + "crf_project auto_increment = 1";
+			if (dbType.startsWith("sqlserver"))
+				resetAutoIncrementQueryCRFProject = "DBCC CHECKIDENT ('" + schema + "crf_project', RESEED, 1)";
 			
 			Statement stmt = conn.createStatement();
 			
@@ -106,6 +117,11 @@ public class DeleteProject
 
 			pstmtDeleteCRFProj.setInt(1, projID);
 			pstmtDeleteCRFProj.execute();
+			
+			stmt.execute(resetAutoIncrementQuery);
+			stmt.execute(resetAutoIncrementQueryProject);
+			stmt.execute(resetAutoIncrementQueryCRFProject);
+			stmt.execute("delete from " + schema + "project_frame_instance");
 			
 			
 			/*
@@ -201,7 +217,7 @@ public class DeleteProject
 		delete.setSchema(args[5]);
 		delete.init(args[0], args[1], args[2], args[3], args[4]);
 		if (args[6].equals("project"))
-			delete.deleteProject(args[7]);
+			delete.deleteProject(args[7], args[4]);
 		else
 			delete.deleteFrame(Integer.parseInt(args[7]));
 	}
