@@ -139,6 +139,7 @@ public class CRFProcessor
 					repeat = repeatDouble.intValue();
 
 				sectionMap.put("name", sectionName);
+				sectionMap.put("display", map.get("display"));
 				sectionMap.put("repeat", repeat);
 				sectionMap.put("startIndex", dataList.size());
 				sectionList.add(sectionMap);
