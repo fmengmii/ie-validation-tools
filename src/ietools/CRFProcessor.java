@@ -140,11 +140,7 @@ public class CRFProcessor
 					repeat = repeatDouble.intValue();
 
 				sectionMap.put("name", sectionName);
-<<<<<<< HEAD
-				sectionMap.put("display", sectionDisplayName);
-=======
 				sectionMap.put("display", map.get("display"));
->>>>>>> branch 'master' of https://github.com/fmengmii/ie-validation-tools.git
 				sectionMap.put("repeat", repeat);
 				sectionMap.put("startIndex", dataList.size());
 				sectionList.add(sectionMap);

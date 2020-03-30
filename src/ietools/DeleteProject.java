@@ -198,10 +198,7 @@ public class DeleteProject
 				+ "(select a.slot_id from " + schema + "frame_slot a where a.frame_id = " + frameID + ")");
 
 			stmt.execute("delete from " + schema + "frame_slot where frame_id = " + frameID);
-<<<<<<< HEAD
-=======
 			//stmt.execute("delete from " + schema + "frame_section where frame_id = " + frameID);
->>>>>>> branch 'master' of https://github.com/fmengmii/ie-validation-tools.git
 		}
 		catch(Exception e)
 		{
