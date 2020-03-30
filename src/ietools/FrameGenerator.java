@@ -97,7 +97,7 @@ public class FrameGenerator
 			stmt.close();
 			slotTypeStmt.close();
 			insertSlotStmt.close();
-			conn.close();
+			//conn.close();
 		}
 		catch(Exception e)
 		{

@@ -195,10 +195,9 @@ public class DeleteProject
 			stmt.execute("delete from " + schema + "frame where frame_id = " + frameID);
 			
 			stmt.execute("delete from " + schema + "slot where slot_id in "
-				+ "(select a.slot_id from " + schema + "frame_slot a where a.frame_id = ?)");
+				+ "(select a.slot_id from " + schema + "frame_slot a where a.frame_id = " + frameID + ")");
 
 			stmt.execute("delete from " + schema + "frame_slot where frame_id = " + frameID);
-			stmt.execute("delete from " + schema + "frame_section where frame_id = " + frameID);
 		}
 		catch(Exception e)
 		{
