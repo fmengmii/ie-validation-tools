@@ -49,7 +49,11 @@ public class LoadDocumentsCOVID
 				
 				boolean flag = false;
 				while (rs.next()) {
-					String text = rs.getString(textColName).toLowerCase();
+					String text = rs.getString(textColName);
+					if (text == null)
+						continue;
+					
+					text = text.toLowerCase();
 					if (text.indexOf(keyword) >= 0) {
 						flag = true;
 					}
