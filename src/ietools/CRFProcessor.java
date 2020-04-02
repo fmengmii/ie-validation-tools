@@ -423,6 +423,26 @@ public class CRFProcessor
 			if (elementRepeatNum > 0)
 				htmlStr += "<input type='button' id='" + htmlID + "_remove' value='-' onclick='removeElement(this.id)'/>";
 		}
+		else if (elementType.equals("select")) {
+			htmlStr = "<select id='" + htmlID + "' name='" + htmlID + "'>";
+			StringBuilder strBlder = new StringBuilder();
+			for (Map<String, String> value : values) {
+				String display = value.get("display");
+				//String valueHTMLID = value.get("htmlID");
+				strBlder.append("<option value=\"" + display + "\">" + display + "</option>");
+			}
+			
+			strBlder.append("</select>");
+			
+			htmlStr += strBlder.toString();
+			
+			if ((repeat == -1 || repeat > 1) && elementRepeatNum ==  0)
+				htmlStr += "<input type='button' id='" + htmlID + "_add' value='+' onclick='addElement(this.id)'/>";
+			if (elementRepeatNum > 0)
+				htmlStr += "<input type='button' id='" + htmlID + "_remove' value='-' onclick='removeElement(this.id)'/>";
+		}
+		
+		System.out.println("htmlStr: " + htmlStr);
 		
 		return htmlStr;
 	}
