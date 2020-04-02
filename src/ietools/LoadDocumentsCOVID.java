@@ -45,6 +45,8 @@ public class LoadDocumentsCOVID
 				
 				ResultSet rs = pstmt.executeQuery();
 				
+				System.out.println("PatientSID: " + line);
+				
 				boolean flag = false;
 				while (rs.next()) {
 					String text = rs.getString(textColName).toLowerCase();
