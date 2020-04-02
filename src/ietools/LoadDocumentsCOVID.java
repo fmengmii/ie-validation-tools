@@ -80,4 +80,15 @@ public class LoadDocumentsCOVID
 			e.printStackTrace();
 		}
 	}
+	
+	public static void main(String[] args)
+	{
+		if (args.length != 3) {
+			System.out.println("usage: user password config");
+			System.exit(0);
+		}
+		
+		LoadDocumentsCOVID load = new LoadDocumentsCOVID();
+		load.loadDocs(args[0], args[1], args[2]);
+	}
 }
