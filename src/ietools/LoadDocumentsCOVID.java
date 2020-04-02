@@ -26,7 +26,7 @@ public class LoadDocumentsCOVID
 			String patientIDFile = props.getProperty("patientIDFile");
 			String query = props.getProperty("query");
 			String textColName = props.getProperty("textColName");
-			String keyword = props.getProperty("keyword");
+			String keyword = props.getProperty("keyword").toLowerCase();
 			String insertQuery = props.getProperty("insertQuery");
 			int numColumns = Integer.parseInt(props.getProperty("numColumns"));
 			
@@ -47,7 +47,7 @@ public class LoadDocumentsCOVID
 				
 				boolean flag = false;
 				while (rs.next()) {
-					String text = rs.getString(textColName);
+					String text = rs.getString(textColName).toLowerCase();
 					if (text.indexOf(keyword) >= 0) {
 						flag = true;
 					}
