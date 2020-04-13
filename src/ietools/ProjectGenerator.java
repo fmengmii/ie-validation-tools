@@ -12,6 +12,7 @@ import utils.db.DBConnection;
 public class ProjectGenerator
 {
 	private Connection conn;
+	private Connection conn2;
 	private Connection docConn;
 	private String schema = "validator.";
 	private String docTable;
@@ -128,6 +129,8 @@ public class ProjectGenerator
 			
 			//connection to the internal database
 			conn = DBConnection.dbConnection(user, password, host, dbName, dbType);
+			conn2 = DBConnection.dbConnection(user, password, host, dbName, dbType);
+			conn2.setAutoCommit(false);
 			
 			//connection to the document database
 			docConn = DBConnection.dbConnection(docUser, docPassword, docHost, docDBName, docDBType);
@@ -193,15 +196,15 @@ public class ProjectGenerator
 			List<Map<String, Object>> frameInstanceInfoList = getFrameInstanceList();
 			
 			//insert frame instances into frame instance table
-			PreparedStatement pstmt = conn.prepareStatement("insert into " + schema + "frame_instance (name, frame_id) values (?,?)");
+			PreparedStatement pstmt = conn2.prepareStatement("insert into " + schema + "frame_instance (name, frame_id) values (?,?)");
 			
 			//insert documents into frame instance document table
-			PreparedStatement pstmt2 = conn.prepareStatement("insert into " + schema + "frame_instance_document (frame_instance_id, document_id, "
+			PreparedStatement pstmt2 = conn2.prepareStatement("insert into " + schema + "frame_instance_document (frame_instance_id, document_id, "
 				+ "document_table, document_namespace, document_key, document_text_column, document_name, document_order, document_features) "
 				+ "values (?,?,?,?,?,?,?,?,?)");
 			
 			//query to associate frames with project
-			PreparedStatement pstmt3 = conn.prepareStatement("insert into " + schema + "project_frame_instance (project_id, frame_instance_id) values (?,?)");
+			PreparedStatement pstmt3 = conn2.prepareStatement("insert into " + schema + "project_frame_instance (project_id, frame_instance_id) values (?,?)");
 			
 			pstmt.setInt(2, frameID);
 			
@@ -210,6 +213,9 @@ public class ProjectGenerator
 			pstmt2.setString(5, docIDColumn);
 			pstmt2.setString(6, docTextColumn);
 			
+			int count1 = 0;
+			int count2 = 0;
+			int count3 = 0;
 
 			//write frame instances into the database
 			for (Map<String, Object> frameMap : frameInstanceInfoList) {
@@ -225,7 +231,16 @@ public class ProjectGenerator
 				int baseCount = 0;
 				
 				if (write && (frameInstanceID == null)) {
-					pstmt.execute();
+					//pstmt.execute();
+					pstmt.addBatch();
+					count1++;
+					
+					if (count1 == 100) {
+						pstmt.executeBatch();
+						conn2.commit();
+						count1 = 0;
+					}
+					
 					frameInstanceID = getLastID();
 					frameInstanceFlag = true;
 				}
@@ -247,19 +262,42 @@ public class ProjectGenerator
 					pstmt2.setInt(8, baseCount + i);
 					pstmt2.setString(9, docFeaturesStr);
 					
-					if (write)
-						pstmt2.execute();
+					if (write) {
+						//pstmt2.execute();
+						pstmt2.addBatch();
+						count2++;
+					
+						if (count2 == 100) {
+							pstmt2.executeBatch();
+							conn2.commit();
+							count2 = 0;
+						}
+							
+					}
 				}
 				
 				if (frameInstanceFlag) {
 					pstmt3.setInt(1, projID);
 					pstmt3.setInt(2, frameInstanceID);
 					
-					if (write)	
-						pstmt3.execute();
+					if (write) {
+						//pstmt3.execute();
+						pstmt3.addBatch();
+						count3++;
+						
+						if (count3 == 100) {
+							pstmt3.executeBatch();
+							conn2.commit();
+							count3 = 0;
+						}
+					}
 				}
 			}
 			
+			pstmt.executeBatch();
+			pstmt2.executeBatch();
+			pstmt3.executeBatch();
+			conn2.commit();
 			
 			conn.close();
 			docConn.close();

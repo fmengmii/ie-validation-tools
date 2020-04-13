@@ -4,14 +4,18 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
+import com.google.gson.Gson;
+
 import utils.db.DBConnection;
 
 public class LoadDocumentsCOVID
 {
 	private Connection conn;
+	private Gson gson;
 	
 	public LoadDocumentsCOVID()
 	{
+		gson = new Gson();
 	}
 	
 	public void loadDocs(String user, String password, String config)
@@ -27,6 +31,8 @@ public class LoadDocumentsCOVID
 			String query = props.getProperty("query");
 			String textColName = props.getProperty("textColName");
 			String keyword = props.getProperty("keyword").toLowerCase();
+			List<String> filterKeywords = new ArrayList<String>();
+			filterKeywords = gson.fromJson(props.getProperty("filterKeywords"), filterKeywords.getClass());
 			String insertQuery = props.getProperty("insertQuery");
 			int numColumns = Integer.parseInt(props.getProperty("numColumns"));
 			
@@ -58,7 +64,19 @@ public class LoadDocumentsCOVID
 						flag = true;
 					}
 					
+					boolean filter = false;
+					
 					if (flag) {
+						for (String filterKeyword : filterKeywords) {
+							if (text.indexOf(filterKeyword) >= 0) {
+								filter = true;
+								break;
+							}
+						}
+						
+						if (filter)
+							continue;
+						
 						for (int i=1; i<=numColumns; i++)
 							pstmtInsert.setObject(i, rs.getObject(i));
 						
