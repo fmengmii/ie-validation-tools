@@ -66,6 +66,7 @@ public class DeleteProject
 			PreparedStatement pstmtDeleteProject = conn.prepareStatement("delete from " + schema + "project where project_id = ?");
 			PreparedStatement pstmtDeleteCRFProj = conn.prepareStatement("delete from " + schema + "crf_project where project_id = ?");
 			
+			/*
 			String resetAutoIncrementQuery = "alter table " + schema + "frame_instance auto_increment = 1";
 			if (dbType.startsWith("sqlserver"))
 				resetAutoIncrementQuery = "DBCC CHECKIDENT ('" + schema + "frame_instance', RESEED, 1)";
@@ -77,6 +78,7 @@ public class DeleteProject
 			String resetAutoIncrementQueryCRFProject = "alter table " + schema + "crf_project auto_increment = 1";
 			if (dbType.startsWith("sqlserver"))
 				resetAutoIncrementQueryCRFProject = "DBCC CHECKIDENT ('" + schema + "crf_project', RESEED, 1)";
+				*/
 			
 			Statement stmt = conn.createStatement();
 			
@@ -86,7 +88,10 @@ public class DeleteProject
 				projID = rs.getInt(1);
 			}
 			
-			rs = stmt.executeQuery("select frame_instance_id from " + schema + "project_frame_instance where project_id = " + projID);
+			//rs = stmt.executeQuery("select frame_instance_id from " + schema + "project_frame_instance where project_id = " + projID);
+			stmt.executeQuery("delete from " + schema + "project_frame_instance where frame_instance_id in (select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			
+			/*
 			while (rs.next()) {
 				int frameInstanceID = rs.getInt(1);
 				pstmtDeleteFrameInstance.setInt(1, frameInstanceID);
@@ -110,7 +115,12 @@ public class DeleteProject
 				pstmtDeleteFrameInstanceStatus.setInt(1, frameInstanceID);
 				pstmtDeleteFrameInstanceStatus.execute();
 			}
-				
+			*/
+			
+			stmt.execute("delete from project where project_id = " + projID);
+			
+			
+			
 			pstmtDeleteProject.setInt(1, projID);
 			pstmtDeleteProject.execute();
 			
@@ -118,10 +128,10 @@ public class DeleteProject
 			pstmtDeleteCRFProj.setInt(1, projID);
 			pstmtDeleteCRFProj.execute();
 			
-			stmt.execute(resetAutoIncrementQuery);
-			stmt.execute(resetAutoIncrementQueryProject);
-			stmt.execute(resetAutoIncrementQueryCRFProject);
-			stmt.execute("delete from " + schema + "project_frame_instance");
+			//stmt.execute(resetAutoIncrementQuery);
+			//stmt.execute(resetAutoIncrementQueryProject);
+			//stmt.execute(resetAutoIncrementQueryCRFProject);
+			stmt.execute("delete from " + schema + "project_frame_instance where project_id = " + projID);
 			
 			
 			/*

@@ -33,6 +33,7 @@ public class ProjectGenerator
 	private boolean write = false;
 	private Map<String, Integer> frameInstanceMap;
 	private Map<Integer, Integer> frameInstanceCountMap;
+	private String entityColumn;
 	
 	
 	public ProjectGenerator()
@@ -81,6 +82,8 @@ public class ProjectGenerator
 			
 			entityColumns = new ArrayList<String>();
 			entityColumns = gson.fromJson(entityColumnsStr, entityColumns.getClass());
+			
+			entityColumn = props.getProperty("entityColumn");
 			
 			String entityDelimitersStr = props.getProperty("entityDelimiters");
 			entityDelimiters = new ArrayList<String>();
@@ -193,6 +196,13 @@ public class ProjectGenerator
 			}
 			
 			
+			int frameInstanceIDCount = 0;
+
+			rs = stmt.executeQuery("select max(frame_instance_id) from " + schema + "frame_instance");
+			if (rs.next())
+				frameInstanceIDCount = rs.getInt(1);
+			
+			
 			List<Map<String, Object>> frameInstanceInfoList = getFrameInstanceList();
 			
 			//insert frame instances into frame instance table
@@ -241,7 +251,8 @@ public class ProjectGenerator
 						count1 = 0;
 					}
 					
-					frameInstanceID = getLastID();
+					//frameInstanceID = getLastID();
+					frameInstanceID = ++frameInstanceIDCount;
 					frameInstanceFlag = true;
 				}
 				else {
@@ -300,6 +311,7 @@ public class ProjectGenerator
 			conn2.commit();
 			
 			conn.close();
+			conn2.close();
 			docConn.close();
 		}
 		catch(Exception e)
@@ -390,9 +402,9 @@ public class ProjectGenerator
 				frameMap.put("entityID", entityID.toString());
 				
 				//look for existing frameInstanceIDs
-				Integer frameInstanceID = frameInstanceMap.get(entityID.toString());
-				if (frameInstanceID != null)
-					frameMap.put("frameInstanceID", frameInstanceID);
+				//Integer frameInstanceID = frameInstanceMap.get(entityID.toString());
+				//if (frameInstanceID != null)
+				//	frameMap.put("frameInstanceID", frameInstanceID);
 				
 				frameInstanceInfoMap.put(entityID.toString(), frameMap);
 				frameInstanceInfoList.add(frameMap);
@@ -417,6 +429,8 @@ public class ProjectGenerator
 				String result = rs.getString(colName);
 				docFeaturesMap.put(colName, result);
 			}
+			
+			docFeaturesMap.put("entity", rs.getString(entityColumn));
 			
 			List<Long> docList = (List<Long>) frameMap.get("docList");
 			if (docList == null) {
