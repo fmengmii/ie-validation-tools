@@ -495,7 +495,7 @@ public class CRFProcessor
 		pstmt.setInt(1, crfID);
 		for (Map<String, Object> element : dataList) {
 			String section = (String) element.get("section");
-			int sectionID = getSectionID(section);
+			int sectionID = getSectionID(crfID, section);
 			int elementID = insertElement(crfID, sectionID, element);
 			pstmt.setInt(2, elementID);
 			pstmt.execute();
@@ -504,10 +504,10 @@ public class CRFProcessor
 		return crfID;
 	}
 	
-	private int getSectionID(String section) throws SQLException
+	private int getSectionID(int crfID, String section) throws SQLException
 	{
 		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery("select section_id from " + schema + "crf_section where name = '" + section + "'");
+		ResultSet rs = stmt.executeQuery("select section_id from " + schema + "crf_section where name = '" + section + "' and crf_id = " + crfID);
 		int sectionID = -1;
 		if (rs.next()) {
 			sectionID = rs.getInt(1);

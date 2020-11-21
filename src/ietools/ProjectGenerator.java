@@ -196,11 +196,13 @@ public class ProjectGenerator
 			}
 			
 			
-			int frameInstanceIDCount = 0;
+			/*
+			int frameInstanceIDCount = -1;
 
-			rs = stmt.executeQuery("select max(frame_instance_id) from " + schema + "frame_instance");
+			rs = stmt.executeQuery("select max(frame_instance_id) from " + schema + "project_frame_instance where project_id = " + projID);
 			if (rs.next())
 				frameInstanceIDCount = rs.getInt(1);
+				*/
 			
 			
 			List<Map<String, Object>> frameInstanceInfoList = getFrameInstanceList();
@@ -251,8 +253,8 @@ public class ProjectGenerator
 						count1 = 0;
 					}
 					
-					//frameInstanceID = getLastID();
-					frameInstanceID = ++frameInstanceIDCount;
+					frameInstanceID = getLastID();
+					//frameInstanceID = ++frameInstanceIDCount;
 					frameInstanceFlag = true;
 				}
 				else {
