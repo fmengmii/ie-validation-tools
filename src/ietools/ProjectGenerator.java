@@ -208,7 +208,7 @@ public class ProjectGenerator
 			List<Map<String, Object>> frameInstanceInfoList = getFrameInstanceList();
 			
 			//insert frame instances into frame instance table
-			PreparedStatement pstmt = conn2.prepareStatement("insert into " + schema + "frame_instance (name, frame_id) values (?,?)");
+			PreparedStatement pstmt = conn.prepareStatement("insert into " + schema + "frame_instance (name, frame_id) values (?,?)");
 			
 			//insert documents into frame instance document table
 			PreparedStatement pstmt2 = conn2.prepareStatement("insert into " + schema + "frame_instance_document (frame_instance_id, document_id, "
@@ -243,7 +243,9 @@ public class ProjectGenerator
 				int baseCount = 0;
 				
 				if (write && (frameInstanceID == null)) {
-					//pstmt.execute();
+					pstmt.execute();
+					
+					/*
 					pstmt.addBatch();
 					count1++;
 					
@@ -252,6 +254,7 @@ public class ProjectGenerator
 						conn2.commit();
 						count1 = 0;
 					}
+					*/
 					
 					frameInstanceID = getLastID();
 					//frameInstanceID = ++frameInstanceIDCount;
@@ -404,9 +407,9 @@ public class ProjectGenerator
 				frameMap.put("entityID", entityID.toString());
 				
 				//look for existing frameInstanceIDs
-				//Integer frameInstanceID = frameInstanceMap.get(entityID.toString());
-				//if (frameInstanceID != null)
-				//	frameMap.put("frameInstanceID", frameInstanceID);
+				Integer frameInstanceID = frameInstanceMap.get(entityID.toString());
+				if (frameInstanceID != null)
+					frameMap.put("frameInstanceID", frameInstanceID);
 				
 				frameInstanceInfoMap.put(entityID.toString(), frameMap);
 				frameInstanceInfoList.add(frameMap);
