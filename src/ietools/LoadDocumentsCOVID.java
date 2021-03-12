@@ -32,7 +32,10 @@ public class LoadDocumentsCOVID
 			String patientIDFile = props.getProperty("patientIDFile");
 			String query = props.getProperty("query");
 			String textColName = props.getProperty("textColName");
-			String keyword = props.getProperty("keyword").toLowerCase();
+			String keyword = props.getProperty("keyword");
+			if (keyword != null)
+				keyword = keyword.toLowerCase();
+			
 			List<String> filterKeywords = new ArrayList<String>();
 			filterKeywords = gson.fromJson(props.getProperty("filterKeywords"), filterKeywords.getClass());
 			String insertQuery = props.getProperty("insertQuery");
