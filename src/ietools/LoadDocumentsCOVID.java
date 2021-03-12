@@ -73,39 +73,43 @@ public class LoadDocumentsCOVID
 				
 				boolean flag = false;
 				while (rs.next()) {
-					String text = rs.getString(textColName);
-					if (text == null)
-						continue;
 					
-					text = text.toLowerCase();
-					if (text.indexOf(keyword) >= 0) {
-						flag = true;
-					}
-					
-					boolean filter = false;
-					
-					if (flag) {
-						for (String filterKeyword : filterKeywords) {
-							if (text.indexOf(filterKeyword) >= 0) {
-								filter = true;
-								break;
-							}
-						}
-						
-						if (filter)
+					if (keyword != null) {
+						String text = rs.getString(textColName);
+						if (text == null)
 							continue;
 						
-						for (int i=1; i<=numColumns; i++)
-							pstmtInsert.setObject(i, rs.getObject(i));
+						text = text.toLowerCase();
 						
-						pstmtInsert.addBatch();
-						batchTotal++;
-						
-						if (batchTotal > 500) {
-							pstmtInsert.executeBatch();
-							conn.commit();
-							batchTotal = 0;
+						if (text.indexOf(keyword) >= 0) {
+							flag = true;
 						}
+					
+						boolean filter = false;
+						
+						if (flag) {
+							for (String filterKeyword : filterKeywords) {
+								if (text.indexOf(filterKeyword) >= 0) {
+									filter = true;
+									break;
+								}
+							}
+						}
+							
+						if (filter)
+							continue;
+					}
+				
+					for (int i=1; i<=numColumns; i++)
+						pstmtInsert.setObject(i, rs.getObject(i));
+						
+					pstmtInsert.addBatch();
+					batchTotal++;
+					
+					if (batchTotal > 500) {
+						pstmtInsert.executeBatch();
+						conn.commit();
+						batchTotal = 0;
 					}
 				}
 			}	
