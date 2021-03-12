@@ -3,6 +3,7 @@ package ietools;
 import java.io.*;
 import java.sql.*;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.google.gson.Gson;
@@ -38,8 +39,10 @@ public class LoadDocumentsCOVID
 			int numColumns = Integer.parseInt(props.getProperty("numColumns"));
 			String startDateFlagStr = props.getProperty("startDateFlag");
 			Boolean startDateFlag = false;
+			String dateFormat = "yyyyMMdd";
 			if (startDateFlagStr != null) {
 				startDateFlag = Boolean.parseBoolean(startDateFlagStr);
+				dateFormat = props.getProperty("dateFormat");
 			}
 			
 			conn = DBConnection.dbConnection(user, password, host, dbName, dbType);
@@ -52,14 +55,17 @@ public class LoadDocumentsCOVID
 			
 			String line = "";
 			int batchTotal = 0;
+			SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+
 			while ((line = reader.readLine()) != null) {
 				String[] parts = line.split(",");
 				pstmt.setString(1, parts[0]);
 				
-				Date startDate = Date.valueOf(parts[1]);
-				
-				if (startDateFlag)
+				if (startDateFlag) {
+			        java.util.Date parsed = format.parse(parts[1]);
+			        java.sql.Date startDate = new java.sql.Date(parsed.getTime());
 					pstmt.setDate(2, startDate);				
+				}
 					
 				ResultSet rs = pstmt.executeQuery();
 				
