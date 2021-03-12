@@ -2,6 +2,7 @@ package ietools;
 
 import java.io.*;
 import java.sql.*;
+import java.sql.Date;
 import java.util.*;
 
 import com.google.gson.Gson;
@@ -35,6 +36,11 @@ public class LoadDocumentsCOVID
 			filterKeywords = gson.fromJson(props.getProperty("filterKeywords"), filterKeywords.getClass());
 			String insertQuery = props.getProperty("insertQuery");
 			int numColumns = Integer.parseInt(props.getProperty("numColumns"));
+			String startDateFlagStr = props.getProperty("startDateFlag");
+			Boolean startDateFlag = false;
+			if (startDateFlagStr != null) {
+				startDateFlag = Boolean.parseBoolean(startDateFlagStr);
+			}
 			
 			conn = DBConnection.dbConnection(user, password, host, dbName, dbType);
 			conn.setAutoCommit(false);
@@ -47,8 +53,14 @@ public class LoadDocumentsCOVID
 			String line = "";
 			int batchTotal = 0;
 			while ((line = reader.readLine()) != null) {
-				pstmt.setString(1, line);
+				String[] parts = line.split(",");
+				pstmt.setString(1, parts[0]);
 				
+				Date startDate = Date.valueOf(parts[1]);
+				
+				if (startDateFlag)
+					pstmt.setDate(2, startDate);				
+					
 				ResultSet rs = pstmt.executeQuery();
 				
 				System.out.println("PatientSID: " + line);
@@ -92,6 +104,8 @@ public class LoadDocumentsCOVID
 				}
 			}	
 			
+			
+			reader.close();
 			pstmtInsert.executeBatch();
 			conn.commit();
 			
