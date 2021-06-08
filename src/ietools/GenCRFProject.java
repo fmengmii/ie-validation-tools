@@ -90,6 +90,7 @@ public class GenCRFProject
 			
 			int crfID = getCRFID(crfName);
 			
+			
 			pstmtInsertProj.setString(1, projName);
 			pstmtInsertProj.execute();
 			
@@ -97,6 +98,10 @@ public class GenCRFProject
 			pstmtInsertCRFProj.setInt(1, projID);
 			pstmtInsertCRFProj.setInt(2, crfID);
 			pstmtInsertCRFProj.execute();
+			
+			System.out.println("crfname: " + crfName + ", crfID: " + crfID);
+			System.out.println("projname: " + projName + ", projID: " + projID);
+
 		}
 	}
 	
