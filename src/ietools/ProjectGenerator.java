@@ -152,7 +152,7 @@ public class ProjectGenerator
 			
 			if (rs.next()) {
 				crfID = rs.getInt(1);
-				frameID = rs.getInt(1);
+				frameID = rs.getInt(2);
 			}
 			
 			

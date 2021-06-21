@@ -43,43 +43,6 @@ public class DeleteProject
 	public void deleteProject(String projectName, String dbType)
 	{
 		try {
-			PreparedStatement pstmtDeleteFrameInstance = conn.prepareStatement("delete from " + schema + "frame_instance where frame_instance_id = ?");
-			PreparedStatement pstmtDeleteFrameInstanceDoc = conn.prepareStatement("delete from " + schema + "frame_instance_document where frame_instance_id = ?");
-			PreparedStatement pstmtDeleteFrameInstanceData = conn.prepareStatement("delete from " + schema + "frame_instance_data where frame_instance_id = ?");
-			PreparedStatement pstmtDeleteFrameInstanceDocHist = conn.prepareStatement("delete from " + schema + "frame_instance_document_history where frame_instance_id = ?");
-			PreparedStatement pstmtDeleteFrameInstanceElem = conn.prepareStatement("delete from " + schema + "frame_instance_element_repeat where frame_instance_id = ?");
-			PreparedStatement pstmtDeleteFrameInstanceSection = conn.prepareStatement("delete from " + schema + "frame_instance_section_repeat where frame_instance_id = ?");
-			PreparedStatement pstmtDeleteFrameInstanceStatus = conn.prepareStatement("delete from " + schema + "frame_instance_status where frame_instance_id = ?");
-			
-			PreparedStatement pstmtDeleteCRF = conn.prepareStatement("delete from " + schema + "crf where crf_id = ?");
-			PreparedStatement pstmtDeleteValue = conn.prepareStatement("delete from " + schema + "value where value_id in "
-				+ "(select a.value_id from " + schema + "element_value a, " + schema + "crf_element b where a.element_id = b.element_id and "
-				+ "b.crf_id = ?)");
-			PreparedStatement pstmtDeleteElement = conn.prepareStatement("delete from " + schema + "element where element_id in "
-				+ "(select a.element_id from " + schema + "crf_element a where a.crf_id = ?)");
-			PreparedStatement pstmtDeleteElementValue = conn.prepareStatement("delete from " + schema + "element_value where "
-				+ "element_id in (select a.element_id from " + schema + "crf_element a where a.crf_id = ?)");
-			PreparedStatement pstmtDeleteCRFElement = conn.prepareStatement("delete from " + schema + "crf_element where crf_id = ?");
-			PreparedStatement pstmtDeleteCRFSection = conn.prepareStatement("delete from " + schema + "crf_section where crf_id = ?");
-			
-			
-			PreparedStatement pstmtDeleteProject = conn.prepareStatement("delete from " + schema + "project where project_id = ?");
-			PreparedStatement pstmtDeleteCRFProj = conn.prepareStatement("delete from " + schema + "crf_project where project_id = ?");
-			
-			/*
-			String resetAutoIncrementQuery = "alter table " + schema + "frame_instance auto_increment = 1";
-			if (dbType.startsWith("sqlserver"))
-				resetAutoIncrementQuery = "DBCC CHECKIDENT ('" + schema + "frame_instance', RESEED, 1)";
-			
-			String resetAutoIncrementQueryProject = "alter table " + schema + "project auto_increment = 1";
-			if (dbType.startsWith("sqlserver"))
-				resetAutoIncrementQueryProject = "DBCC CHECKIDENT ('" + schema + "project', RESEED, 1)";
-			
-			String resetAutoIncrementQueryCRFProject = "alter table " + schema + "crf_project auto_increment = 1";
-			if (dbType.startsWith("sqlserver"))
-				resetAutoIncrementQueryCRFProject = "DBCC CHECKIDENT ('" + schema + "crf_project', RESEED, 1)";
-				*/
-			
 			Statement stmt = conn.createStatement();
 			
 			ResultSet rs = stmt.executeQuery("select project_id from " + schema + "project where name = '" + projectName + "'");
@@ -89,73 +52,48 @@ public class DeleteProject
 			}
 			
 			//rs = stmt.executeQuery("select frame_instance_id from " + schema + "project_frame_instance where project_id = " + projID);
-			stmt.executeQuery("delete from " + schema + "project_frame_instance where frame_instance_id in (select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			stmt.execute("delete from " + schema + "frame_instance where frame_instance_id in "
+				+ "(select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
 			
-			/*
-			while (rs.next()) {
-				int frameInstanceID = rs.getInt(1);
-				pstmtDeleteFrameInstance.setInt(1, frameInstanceID);
-				pstmtDeleteFrameInstance.execute();
-				
-				pstmtDeleteFrameInstanceDoc.setInt(1, frameInstanceID);
-				pstmtDeleteFrameInstanceDoc.execute();
-				
-				pstmtDeleteFrameInstanceData.setInt(1, frameInstanceID);
-				pstmtDeleteFrameInstanceData.execute();
-				
-				pstmtDeleteFrameInstanceDocHist.setInt(1, frameInstanceID);
-				pstmtDeleteFrameInstanceDocHist.execute();
-				
-				pstmtDeleteFrameInstanceElem.setInt(1, frameInstanceID);
-				pstmtDeleteFrameInstanceElem.execute();
-				
-				pstmtDeleteFrameInstanceSection.setInt(1, frameInstanceID);
-				pstmtDeleteFrameInstanceSection.execute();
-				
-				pstmtDeleteFrameInstanceStatus.setInt(1, frameInstanceID);
-				pstmtDeleteFrameInstanceStatus.execute();
-			}
-			*/
+			stmt.execute("delete from " + schema + "frame_instance_document where frame_instance_id in "
+					+ "(select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			
+			stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id in "
+					+ "(select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			
+			stmt.execute("delete from " + schema + "frame_instance_data_history where frame_instance_id in "
+					+ "(select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			
+			stmt.execute("delete from " + schema + "frame_instance_data_history2 where frame_instance_id in "
+					+ "(select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			
+			stmt.execute("delete from " + schema + "frame_instance_document_history where frame_instance_id in "
+					+ "(select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			
+			stmt.execute("delete from " + schema + "frame_instance_element_repeat where frame_instance_id in "
+					+ "(select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			
+			stmt.execute("delete from " + schema + "frame_instance_lock where frame_instance_id in "
+					+ "(select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			
+			stmt.execute("delete from " + schema + "frame_instance_order where frame_instance_id in "
+					+ "(select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			
+			stmt.execute("delete from " + schema + "frame_instance_section_repeat where frame_instance_id in "
+					+ "(select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			
+			stmt.execute("delete from " + schema + "frame_instance_status where frame_instance_id in "
+					+ "(select distinct a.frame_instance_id from project_frame_instance a where a.project_id = " + projID + ")");
+			
+			stmt.execute("delete from " + schema + "project_preload where project_id = " + projID);
+			
+			stmt.execute("delete from " + schema + "user_project where project_id = " + projID);
+			
+			stmt.execute("delete from " + schema + "crf_project where project_id = " + projID);
 			
 			stmt.execute("delete from project where project_id = " + projID);
 			
-			
-			
-			pstmtDeleteProject.setInt(1, projID);
-			pstmtDeleteProject.execute();
-			
-
-			pstmtDeleteCRFProj.setInt(1, projID);
-			pstmtDeleteCRFProj.execute();
-			
-			//stmt.execute(resetAutoIncrementQuery);
-			//stmt.execute(resetAutoIncrementQueryProject);
-			//stmt.execute(resetAutoIncrementQueryCRFProject);
 			stmt.execute("delete from " + schema + "project_frame_instance where project_id = " + projID);
-			
-			
-			/*
-			rs = stmt.executeQuery("select crf_id from " + schema + "crf where crf_id not in "
-				+ "(select distinct a.crf_id from " + schema + "crf_project a)"); 
-			
-			while (rs.next()) {
-				int crfID = rs.getInt(1);
-				pstmtDeleteCRF.setInt(1, crfID);
-				pstmtDeleteCRF.execute();
-				
-				pstmtDeleteElement.setInt(1, crfID);
-				pstmtDeleteElement.execute();
-				
-				pstmtDeleteValue.setInt(1, crfID);
-				pstmtDeleteValue.execute();
-				
-				pstmtDeleteElementValue.setInt(1, crfID);
-				pstmtDeleteElementValue.execute();
-				
-				pstmtDeleteCRFElement.setInt(1, crfID);
-				pstmtDeleteCRFElement.execute();
-			}
-			*/
 			
 		}
 		catch(Exception e)
@@ -164,51 +102,61 @@ public class DeleteProject
 		}
 	}
 	
-	public void deleteFrame(int frameID)
+	public void deleteCRF(String crfName)
 	{
 		try {
 			Statement stmt = conn.createStatement();
 			
-			PreparedStatement pstmtDeleteCRF = conn.prepareStatement("delete from " + schema + "crf where crf_id = ?");
-			PreparedStatement pstmtDeleteValue = conn.prepareStatement("delete from " + schema + "value where value_id in "
-				+ "(select a.value_id from " + schema + "element_value a, " + schema + "crf_element b where a.element_id = b.element_id and "
-				+ "b.crf_id = ?)");
-			PreparedStatement pstmtDeleteElement = conn.prepareStatement("delete from " + schema + "element where element_id in "
-				+ "(select a.element_id from " + schema + "crf_element a where a.crf_id = ?)");
-			PreparedStatement pstmtDeleteElementValue = conn.prepareStatement("delete from " + schema + "element_value where "
-				+ "element_id in (select a.element_id from " + schema + "crf_element a where a.crf_id = ?)");
-			PreparedStatement pstmtDeleteCRFElement = conn.prepareStatement("delete from " + schema + "crf_element where crf_id = ?");
-			PreparedStatement pstmtDeleteCRFSection = conn.prepareStatement("delete from " + schema + "crf_section where crf_id = ?");
-
+			int crfID = -1;
+			int frameID = -1;
+			ResultSet rs = stmt.executeQuery("select crf_id, frame_id from " + schema + "crf where crf_name = " + crfName); 
 				
-			
-			ResultSet rs = stmt.executeQuery("select crf_id from " + schema + "crf where frame_id = " + frameID); 
-				
-			while (rs.next()) {
-				int crfID = rs.getInt(1);
-				pstmtDeleteCRF.setInt(1, crfID);
-				pstmtDeleteCRF.execute();
-				
-				pstmtDeleteElement.setInt(1, crfID);
-				pstmtDeleteElement.execute();
-				
-				pstmtDeleteValue.setInt(1, crfID);
-				pstmtDeleteValue.execute();
-				
-				pstmtDeleteElementValue.setInt(1, crfID);
-				pstmtDeleteElementValue.execute();
-				
-				pstmtDeleteCRFElement.setInt(1, crfID);
+			if (rs.next()) {
+				crfID = rs.getInt(1);
+				frameID = rs.getInt(2);
 			}
 			
+			StringBuilder strBlder = new StringBuilder();
+			rs = stmt.executeQuery("select project_id from " + schema + "crf_project where crf_id = " + crfID);
+			while (rs.next()) {
+				strBlder.append(rs.getInt(1) + ", ");
+			}
 			
-			stmt.execute("delete from " + schema + "frame where frame_id = " + frameID);
+			if (strBlder.length() > 0) {
+				System.out.println("CRF: " + crfName + " is associated with projects: " + strBlder.toString());
+				return;
+			}
 			
-			stmt.execute("delete from " + schema + "slot where slot_id in "
-				+ "(select a.slot_id from " + schema + "frame_slot a where a.frame_id = " + frameID + ")");
-
-			stmt.execute("delete from " + schema + "frame_slot where frame_id = " + frameID);
-			//stmt.execute("delete from " + schema + "frame_section where frame_id = " + frameID);
+			else {
+				//delete CRF
+				//stmt.execute("delete from " + schema + "crf_project where crf_id = " + crfID);
+				//stmt.execute("delete from " + schema + "crf_element where crf_id = " + crfID);
+				stmt.execute("delete from " + schema + "crf_section where crf_id = " + crfID);
+				
+				stmt.execute("delete from " + schema + "value where value_id in "
+					+ "(select a.value_id from " + schema + "element_value a, crf_element b where b.crf_id = " + crfID 
+					+ " and a.element_id = b.element_id)");
+				
+				stmt.execute("delete from " + schema + "element where element_id in "
+					+ "(select a.element_id from " + schema + "crf_element a where a.crf_id = " + crfID + ")");
+				
+				stmt.execute("delete from " + schema + "element_value where element_id in "
+						+ "(select a.element_id from " + schema + "crf_element a where a.crf_id = " + crfID + ")");
+				
+				stmt.execute("delete from " + schema + "crf_element where crf_id = " + crfID);
+				
+				stmt.execute("delete from " + schema + "crf where crf_id = " + crfID);
+				
+				
+				//delete frame
+				stmt.execute("delete from " + schema + "frame where frame_id = " + frameID);
+				
+				stmt.execute("delete from " + schema + "slot where slot_id in "
+					+ "(select a.slot_id from " + schema + "frame_slot a where a.frame_id = " + frameID + ")");
+	
+				stmt.execute("delete from " + schema + "frame_slot where frame_id = " + frameID);
+				//stmt.execute("delete from " + schema + "frame_section where frame_id = " + frameID);
+			}
 		}
 		catch(Exception e)
 		{
@@ -219,7 +167,7 @@ public class DeleteProject
 	public static void main(String[] args)
 	{
 		if (args.length != 8) {
-			System.out.println("usage: user password host dbName dbType schema project/frame projName/frameID");
+			System.out.println("usage: user password host dbName dbType schema project/crf projName/crfName");
 			System.exit(0);
 		}
 		
@@ -229,6 +177,6 @@ public class DeleteProject
 		if (args[6].equals("project"))
 			delete.deleteProject(args[7], args[4]);
 		else
-			delete.deleteFrame(Integer.parseInt(args[7]));
+			delete.deleteCRF(args[7]);
 	}
 }
