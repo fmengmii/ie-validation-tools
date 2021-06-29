@@ -51,7 +51,7 @@ public class DeleteProject
 				projID = rs.getInt(1);
 			}
 			
-			System.out.println("deleteing project: " + projectName + ", projID: " + projID);
+			System.out.println("deleting project: " + projectName + ", projID: " + projID);
 			
 			//rs = stmt.executeQuery("select frame_instance_id from " + schema + "project_frame_instance where project_id = " + projID);
 			stmt.execute("delete from " + schema + "frame_instance where frame_instance_id in "
@@ -111,7 +111,7 @@ public class DeleteProject
 			
 			int crfID = -1;
 			int frameID = -1;
-			ResultSet rs = stmt.executeQuery("select crf_id, frame_id from " + schema + "crf where crf_name = " + crfName); 
+			ResultSet rs = stmt.executeQuery("select crf_id, frame_id from " + schema + "crf where name = '" + crfName + "'"); 
 				
 			if (rs.next()) {
 				crfID = rs.getInt(1);
