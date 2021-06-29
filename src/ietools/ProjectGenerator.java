@@ -212,8 +212,8 @@ public class ProjectGenerator
 			
 			//insert documents into frame instance document table
 			PreparedStatement pstmt2 = conn2.prepareStatement("insert into " + schema + "frame_instance_document (frame_instance_id, document_id, "
-				+ "document_table, document_namespace, document_key, document_text_column, document_name, document_order, document_features) "
-				+ "values (?,?,?,?,?,?,?,?,?)");
+				+ "document_table, document_namespace, document_key, document_text_column, document_name, document_order, document_features, disabled) "
+				+ "values (?,?,?,?,?,?,?,?,?,0)");
 			
 			//query to associate frames with project
 			PreparedStatement pstmt3 = conn2.prepareStatement("insert into " + schema + "project_frame_instance (project_id, frame_instance_id) values (?,?)");
