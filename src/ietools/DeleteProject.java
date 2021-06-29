@@ -136,7 +136,7 @@ public class DeleteProject
 				stmt.execute("delete from " + schema + "crf_section where crf_id = " + crfID);
 				
 				stmt.execute("delete from " + schema + "value where value_id in "
-					+ "(select a.value_id from " + schema + "element_value a, crf_element b where b.crf_id = " + crfID 
+					+ "(select a.value_id from " + schema + "element_value a, " + schema + "crf_element b where b.crf_id = " + crfID 
 					+ " and a.element_id = b.element_id)");
 				
 				stmt.execute("delete from " + schema + "element where element_id in "
