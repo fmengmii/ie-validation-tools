@@ -51,6 +51,8 @@ public class DeleteProject
 				projID = rs.getInt(1);
 			}
 			
+			System.out.println("deleteing project: " + projectName + ", projID: " + projID);
+			
 			//rs = stmt.executeQuery("select frame_instance_id from " + schema + "project_frame_instance where project_id = " + projID);
 			stmt.execute("delete from " + schema + "frame_instance where frame_instance_id in "
 				+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
