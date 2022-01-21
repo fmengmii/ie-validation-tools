@@ -124,6 +124,8 @@ public class ProjectGenerator
 			
 			orderbyColumn = props.getProperty("orderbyColumn");
 			
+
+			
 			write = Boolean.parseBoolean(props.getProperty("write"));
 			
 			//database schema
@@ -180,6 +182,7 @@ public class ProjectGenerator
 			
 			//get existing frame instances
 			frameInstanceMap = new HashMap<String, Integer>();
+			/*
 			frameInstanceCountMap = new HashMap<Integer, Integer>();
 			rs = stmt.executeQuery("select frame_instance_id, name from " + schema + "frame_instance");
 			while (rs.next()) {
@@ -187,6 +190,7 @@ public class ProjectGenerator
 				String name = rs.getString(2);
 				frameInstanceMap.put(name, frameInstanceID);
 			}
+			*/
 			
 			rs = stmt.executeQuery("select frame_instance_id, count(*) from " + schema + "frame_instance_document group by frame_instance_id");
 			while (rs.next()) {
@@ -408,8 +412,9 @@ public class ProjectGenerator
 				
 				//look for existing frameInstanceIDs
 				Integer frameInstanceID = frameInstanceMap.get(entityID.toString());
-				if (frameInstanceID != null)
+				if (frameInstanceID != null) {
 					frameMap.put("frameInstanceID", frameInstanceID);
+				}
 				
 				frameInstanceInfoMap.put(entityID.toString(), frameMap);
 				frameInstanceInfoList.add(frameMap);
