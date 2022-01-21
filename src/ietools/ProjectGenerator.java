@@ -182,8 +182,9 @@ public class ProjectGenerator
 			
 			//get existing frame instances
 			frameInstanceMap = new HashMap<String, Integer>();
-			/*
 			frameInstanceCountMap = new HashMap<Integer, Integer>();
+			
+			/*
 			rs = stmt.executeQuery("select frame_instance_id, name from " + schema + "frame_instance");
 			while (rs.next()) {
 				int frameInstanceID = rs.getInt(1);
