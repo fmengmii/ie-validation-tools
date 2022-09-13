@@ -101,7 +101,7 @@ public class CRFProcessor
 		
 		reader.close();
 		
-		//System.out.println(strBlder.toString());
+		System.out.println(strBlder.toString());
 		
 		dataList = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
