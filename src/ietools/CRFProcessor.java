@@ -508,7 +508,7 @@ public class CRFProcessor
 			
 			pstmt2.setInt(1, elementID);
 			pstmt2.setInt(2, count++);
-			pstmt.execute();
+			pstmt2.execute();
 		}
 		
 		return crfID;
