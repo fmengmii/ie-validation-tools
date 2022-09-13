@@ -479,6 +479,8 @@ public class CRFProcessor
 		int crfID = insertCRF(crfName, generateID(crfName));
 		PreparedStatement pstmt = conn.prepareStatement("insert into " + schema + "crf_section (name, display_name, crf_id, " + rq + "repeat" + rq + ") values (?,?,?,?)");
 		pstmt.setInt(3, crfID);
+		
+		PreparedStatement pstmt2 = conn.prepareStatement("insert into " + schema + "element_order (element_id, element_order) values (?,?)");
 
 		for (Map<String, Object> sectionMap : sectionList) {
 			
@@ -495,11 +497,17 @@ public class CRFProcessor
 
 		pstmt = conn.prepareStatement("insert into " + schema + "crf_element (crf_id, element_id) values (?,?)");
 		pstmt.setInt(1, crfID);
+		
+		int count = 0;
 		for (Map<String, Object> element : dataList) {
 			String section = (String) element.get("section");
 			int sectionID = getSectionID(crfID, section);
 			int elementID = insertElement(crfID, sectionID, element);
 			pstmt.setInt(2, elementID);
+			pstmt.execute();
+			
+			pstmt2.setInt(1, elementID);
+			pstmt2.setInt(2, count++);
 			pstmt.execute();
 		}
 		
@@ -655,6 +663,7 @@ public class CRFProcessor
 			pstmt.setInt(2, valueID);
 			pstmt.execute();
 		}
+		
 	
 		stmt.close();
 		pstmt.close();
