@@ -314,6 +314,8 @@ public class CRFProcessor
 		if (repeatObj != null)
 			element.put("repeat", ((Double) repeatObj).intValue());
 		
+		System.out.println("display: " + elementMap.get("display") + " htmlID: " + elementMap.get("htmlID") + " type: " + type 
+			+ " dataType: " + dataType + " repeat: " + elementMap.get("repeat"));		
 		/*
 		if (type.equals("text")) {
 			//element.put("html", "<input type=''text'' id=''" + htmlID + "'' />");
