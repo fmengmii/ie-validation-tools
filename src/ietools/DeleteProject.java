@@ -51,51 +51,53 @@ public class DeleteProject
 				projID = rs.getInt(1);
 			}
 			
-			System.out.println("deleting project: " + projectName + ", projID: " + projID);
-			
-			//rs = stmt.executeQuery("select frame_instance_id from " + schema + "project_frame_instance where project_id = " + projID);
-			stmt.execute("delete from " + schema + "frame_instance where frame_instance_id in "
-				+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
-			
-			stmt.execute("delete from " + schema + "frame_instance_document where frame_instance_id in "
+			if (projID >= 0) {
+				System.out.println("deleting project: " + projectName + ", projID: " + projID);
+				
+				//rs = stmt.executeQuery("select frame_instance_id from " + schema + "project_frame_instance where project_id = " + projID);
+				stmt.execute("delete from " + schema + "frame_instance where frame_instance_id in "
 					+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
-			
-			stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id in "
-					+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
-			
-			stmt.execute("delete from " + schema + "frame_instance_data_history where frame_instance_id in "
-					+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
-			
-			stmt.execute("delete from " + schema + "frame_instance_data_history2 where frame_instance_id in "
-					+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
-			
-			stmt.execute("delete from " + schema + "frame_instance_document_history where frame_instance_id in "
-					+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
-			
-			stmt.execute("delete from " + schema + "frame_instance_element_repeat where frame_instance_id in "
-					+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
-			
-			stmt.execute("delete from " + schema + "frame_instance_lock where frame_instance_id in "
-					+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
-			
-			stmt.execute("delete from " + schema + "frame_instance_order where frame_instance_id in "
-					+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
-			
-			stmt.execute("delete from " + schema + "frame_instance_section_repeat where frame_instance_id in "
-					+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
-			
-			stmt.execute("delete from " + schema + "frame_instance_status where frame_instance_id in "
-					+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
-			
-			stmt.execute("delete from " + schema + "project_preload where project_id = " + projID);
-			
-			stmt.execute("delete from " + schema + "user_project where project_id = " + projID);
-			
-			stmt.execute("delete from " + schema + "crf_project where project_id = " + projID);
-			
-			stmt.execute("delete from " + schema + "project where project_id = " + projID);
-			
-			stmt.execute("delete from " + schema + "project_frame_instance where project_id = " + projID);
+				
+				stmt.execute("delete from " + schema + "frame_instance_document where frame_instance_id in "
+						+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
+				
+				stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id in "
+						+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
+				
+				stmt.execute("delete from " + schema + "frame_instance_data_history where frame_instance_id in "
+						+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
+				
+				stmt.execute("delete from " + schema + "frame_instance_data_history2 where frame_instance_id in "
+						+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
+				
+				stmt.execute("delete from " + schema + "frame_instance_document_history where frame_instance_id in "
+						+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
+				
+				stmt.execute("delete from " + schema + "frame_instance_element_repeat where frame_instance_id in "
+						+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
+				
+				stmt.execute("delete from " + schema + "frame_instance_lock where frame_instance_id in "
+						+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
+				
+				stmt.execute("delete from " + schema + "frame_instance_order where frame_instance_id in "
+						+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
+				
+				stmt.execute("delete from " + schema + "frame_instance_section_repeat where frame_instance_id in "
+						+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
+				
+				stmt.execute("delete from " + schema + "frame_instance_status where frame_instance_id in "
+						+ "(select distinct a.frame_instance_id from " + schema + "project_frame_instance a where a.project_id = " + projID + ")");
+				
+				stmt.execute("delete from " + schema + "project_preload where project_id = " + projID);
+				
+				stmt.execute("delete from " + schema + "user_project where project_id = " + projID);
+				
+				stmt.execute("delete from " + schema + "crf_project where project_id = " + projID);
+				
+				stmt.execute("delete from " + schema + "project where project_id = " + projID);
+				
+				stmt.execute("delete from " + schema + "project_frame_instance where project_id = " + projID);
+			}
 			
 		}
 		catch(Exception e)
